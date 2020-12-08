@@ -25,7 +25,10 @@ class Login extends React.Component {
 
             <div>
                <body class="text-center">
-                   <button></button>
+                   {/* <div>
+                        <button>Registrarse</button>
+
+                   </div> */}
                     <main class="form-signin">
                         <form>
                             <h1 class="h3 mb-3 fw-normal">Login</h1>

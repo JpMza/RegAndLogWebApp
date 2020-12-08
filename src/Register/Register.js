@@ -8,10 +8,10 @@ export default class Register extends React.Component {
     }
 
     state = {
-        login = "",
-        fisrtName = "",
-        lastName = "",
-        email = ""
+        login : "",
+        fisrtName : "",
+        lastName : "",
+        email : ""
     }
 
     handleChange = (e) => {
@@ -35,7 +35,7 @@ export default class Register extends React.Component {
                     <input type="text" id="email" class="form-control" onChange={this.handleChange} value={this.state.login} placeholder="email" aria-label="email" aria-describedby="basic-addon1"></input>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-text">First and last name</span>
+                    <span class="input-group-text">Nombre y Apellido</span>
                     <input id="firstName" onChange={this.handleChange} value={this.state.fisrtName} type="text" aria-label="First name" class="form-control"></input>
                     <input id="lastName" type="text" value={this.state.lastName} aria-label="Last name" class="form-control"></input>
                 </div>
