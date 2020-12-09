@@ -3,9 +3,9 @@ import './Login.css';
 
 class Login extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     state = {
         login: "",
@@ -24,27 +24,23 @@ class Login extends React.Component {
         return (
 
             <div>
-               <body class="text-center">
-                   {/* <div>
-                        <button>Registrarse</button>
-
-                   </div> */}
-                    <main class="form-signin">
+               <div className="text-center">
+                    <main className="form-signin">
                         <form>
-                            <h1 class="h3 mb-3 fw-normal">Login</h1>
-                            <label for="inputEmail" class="visually-hidden">Nombre de Usuario</label>
-                            <input type="email" id="login" class="form-control" placeholder="Email address" required autofocus />
-                            <label for="inputPassword" class="visually-hidden">Contraseña</label>
-                            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required />
-                            <div class="checkbox mb-3">
+                            <h1 className="h3 mb-3 fw-normal">Login</h1>
+                            <label htmlFor="inputEmail" className="visually-hidden">Nombre de Usuario</label>
+                            <input type="email" id="login" className="form-control" placeholder="Email address" required />
+                            <label htmlFor="inputPassword" className="visually-hidden">Contraseña</label>
+                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required />
+                            <div className="checkbox mb-3">
                                 <label>
                                     <input type="checkbox" value="remember-me" /> Remember me
                                         </label>
                             </div>
-                            <button onClick={this.hangdleSubmit} class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                            <button onClick={this.hangdleSubmit} className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
                         </form>
                     </main>
-                </body>
+                </div>
             </div>
         );
     }
