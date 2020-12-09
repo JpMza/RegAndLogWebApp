@@ -1,56 +1,48 @@
 import './App.css';
 import React from 'react';
-import Login from './Login/Login';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import Register from './Register/Register'; 
-import User from './User/User';
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
+import { createBrowserHistory } from "history";
 
-function App() {
-  return (
-    <Router>
-      <div className="app">
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item active">
-              <Link className="nav-link" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">Registrarse</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/users">Usuarios</Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
+const history = createBrowserHistory();
+const Login = React.lazy(() => import("./Login/Login"));
+const Register = React.lazy(() => import("./Register/Register"));
+const loading = () => (
+  <div className="animated fadeIn pt-3 text-center">Cargando...</div>
+);
+class App extends React.Component {
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/users">
-            <User />
-          </Route>
-          <Route path="/">
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
+  cookies = this.props.cookies;
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
+
+  render() {
+    return (
+      <HashRouter >
+        <React.Suspense fallback={loading()}>
+          <Switch>
+            <Route exact path="/login" name="Login Page" render={(props) => (
+              <Login cookies={this.cookies} {...props} ></Login>
+            )} >
+            </Route>
+            <Route exact path="/register" name="Register" render={(props) => (
+              <Register cookies={this.cookies} {...props}></Register>
+            )}>
+            </Route>
+            <Route exact path="/" name="Home">
+
+            </Route>
+            <Redirect
+              path="/"
+              to={this.props.cookies.cookies.token ? "/" : "/login"}
+            />
+          </Switch>
+        </React.Suspense>
+      </HashRouter>
+    );
+  }
 }
 
 

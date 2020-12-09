@@ -1,10 +1,6 @@
 import React from 'react';
-import { post, register } from '../ApiRequest/ApiRequest.js';
+import { register } from '../ApiRequest/ApiRequest.js';
 export default class Register extends React.Component {
-
-    // constructor(props) {
-    //     super(props);
-    // }
 
     state = {
         login: "",

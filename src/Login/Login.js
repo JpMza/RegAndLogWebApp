@@ -1,6 +1,10 @@
 import React from 'react';
 import './Login.css';
 import { login } from '../ApiRequest/ApiRequest';
+import { parseJwt } from '../Utils/Functions';
+
+
+
 class Login extends React.Component {
 
     // constructor(props) {
@@ -14,6 +18,7 @@ class Login extends React.Component {
     }
 
     handleChange = (e) => {
+        console.log(this.props);
         this.setState({ [e.target.id]: e.target.value })
     }
 
@@ -23,7 +28,8 @@ class Login extends React.Component {
             const response = await login(this.state.username, this.state.password, this.state.rememberme);
             console.log(response);
             await this.saveToken(response);
-            this.props.history.push(`/`);
+            
+            this.props.history.push(`/register`);
         } catch (error) {
             console.log(error)
         }
@@ -36,7 +42,6 @@ class Login extends React.Component {
             maxAge: parsedToken.exp,
         });
         //cookies.set("role", parsedToken.auth);
-
     };
 
     render() {
