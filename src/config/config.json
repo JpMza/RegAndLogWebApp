@@ -1,3 +1,8 @@
 {
-    "devBackendUrl" : "http://localhost:8080"
+    "development": {
+        "backendUrl": "http://localhost:8080/api/"
+    },
+    "testing": {
+        "backendUrl": "http://localhost:8080/api/"
+    }
 }
