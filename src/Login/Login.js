@@ -1,6 +1,6 @@
 import React from 'react';
 import './Login.css';
-
+import { login } from '../ApiRequest/ApiRequest';
 class Login extends React.Component {
 
     // constructor(props) {
@@ -8,40 +8,64 @@ class Login extends React.Component {
     // }
 
     state = {
-        login: "",
-        password: ""
+        username: "",
+        password: "",
+        rememberme: false
     }
 
     handleChange = (e) => {
         this.setState({ [e.target.id]: e.target.value })
-    } 
-
-    hangdleSubmit = () => {
-
     }
+
+    handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await login(this.state.username, this.state.password, this.state.rememberme);
+            console.log(response);
+            await this.saveToken(response);
+            this.props.history.push(`/`);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    saveToken = async ({ data: { id_token } }) => {
+        const { cookies } = this.props;
+        let parsedToken = parseJwt(id_token);
+        cookies.set("token", id_token, {
+            maxAge: parsedToken.exp,
+        });
+        //cookies.set("role", parsedToken.auth);
+
+    };
 
     render() {
         return (
 
             <div>
-               <div className="text-center">
-                    <main className="form-signin">
+                <body class="text-center">
+                    {/* <div>
+                        <button>Registrarse</button>
+
+                   </div> */}
+                    <main class="form-signin">
                         <form>
-                            <h1 className="h3 mb-3 fw-normal">Login</h1>
-                            <label htmlFor="inputEmail" className="visually-hidden">Nombre de Usuario</label>
-                            <input type="email" id="login" className="form-control" placeholder="Email address" required />
-                            <label htmlFor="inputPassword" className="visually-hidden">Contraseña</label>
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required />
-                            <div className="checkbox mb-3">
+                            <h1 class="h3 mb-3 fw-normal">Login</h1>
+                            <label for="inputEmail" class="visually-hidden">Nombre de Usuario</label>
+                            <input type="text" id="username" onChange={this.handleChange} value={this.state.username} class="form-control" placeholder="Nombre de Usuario" required autofocus />
+                            <label for="inputPassword" class="visually-hidden">Contraseña</label>
+                            <input type="password" onChange={this.handleChange} id="password" value={this.state.password} class="form-control" placeholder="Contraseña" required />
+                            <div class="checkbox mb-3">
                                 <label>
-                                    <input type="checkbox" value="remember-me" /> Remember me
+                                    <input type="checkbox" value={this.state.rememberme} onClick={() => this.setState({ rememberme: !this.state.rememberme })} /> Recordarme
                                         </label>
                             </div>
-                            <button onClick={this.hangdleSubmit} className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                            <button onClick={e => this.handleSubmit(e)} class="w-100 btn btn-lg btn-primary" type="submit">Iniciar Sesión</button>
                         </form>
                     </main>
-                </div>
+                </body>
             </div>
+
         );
     }
 }

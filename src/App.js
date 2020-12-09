@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import Login from './Login/Login';
 import {
   BrowserRouter as Router,
@@ -52,4 +53,5 @@ function App() {
   );
 }
 
-export default App;
+
+export default withCookies(App);
