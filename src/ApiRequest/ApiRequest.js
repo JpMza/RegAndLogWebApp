@@ -35,11 +35,50 @@ export const post = async (url, data, authToken) => {
   }
 };
 
-export const register = async (formData) => {
+export const login = async (username, password, rememberme) => {
   try {
-    const response = await axiosInstance.post(`/users`, formData);
+    const response = await axiosInstance.post(`/authenticate`, {
+      password: password,
+      rememberMe: rememberme,
+      username: username,
+    });
     return response;
   } catch (error) {
     throw new Error(error);
+  }
+};
+
+export const register = async (formData) => {
+  try {
+    const response = await axiosInstance.post(`/account/create`, formData);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const put = async (url, data, authToken) => {
+  try {
+    const response = await axiosInstance.put(`${url}`, data, {
+      headers: { Authorization: `${BEARER} ${authToken}` },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const drop = async (url, authToken) => {
+  try {
+    const response = await axiosInstance.delete(`${url}`, {
+      headers: { Authorization: `${BEARER} ${authToken}` },
+    });
+    return response;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else {
+      throw new Error(error);
+    }
   }
 };

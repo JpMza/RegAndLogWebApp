@@ -1,12 +1,37 @@
 import React from 'react';
-
+import {get, drop} from '../ApiRequest/ApiRequest';
 export default class Register extends React.Component {
 
-    // constructor(props) {
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+        this.token = this.props.cookies.cookies.token;
+    }
 
-    
+    state = {
+        users: []
+    }
+
+    componentDidMount() {
+        this.getData();
+    }
+
+    getData = () => {
+        get("/users",this.token).then(resp => {
+            this.setState({users : resp.data});
+            console.log(resp);
+        }).catch(e => console.log(e))
+    }
+
+    handleDelete = (user) => {
+        drop(`users/${user.login}`, this.token).then(_result => {
+            console.log(_result);
+            this.getData();
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
+
     render() {
 
         return (
@@ -23,16 +48,18 @@ export default class Register extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>mdo@mdo.com</td>
-                                <td>markotto</td>
+                            {this.state.users && this.state.users.map((user, i) => (
+                                <tr key={i}>
+                                <td>{user.firstName}</td>
+                                <td>{user.lastName}</td>
+                                <td>{user.email}</td>
+                                <td>{user.login}</td>
                                 <td>
-                                    <button onClick={this.handleSubmit} className="btn btn-success mr-2 p-1" type="button">Editar</button>
-                                    <button className="btn btn-primary p-1" type="button">Eliminar</button>
+                                    <button onClick={() => this.props.history.push({pathname: '/register', user: user})} className="btn btn-success mr-2 p-1" type="button">Editar</button>
+                                    <button onClick={() => this.handleDelete(user)} className="btn btn-primary p-1" type="button">Eliminar</button>
                                 </td>
                             </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
