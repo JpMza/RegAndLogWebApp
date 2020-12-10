@@ -28,7 +28,6 @@ class Login extends React.Component {
             const response = await login(this.state.username, this.state.password, this.state.rememberme);
             console.log(response);
             await this.saveToken(response);
-            
             this.props.history.push(`/register`);
         } catch (error) {
             console.log(error)

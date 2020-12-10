@@ -56,3 +56,29 @@ export const register = async (formData) => {
     throw new Error(error);
   }
 };
+
+export const put = async (url, data, authToken) => {
+  try {
+    const response = await axiosInstance.put(`${url}`, data, {
+      headers: { Authorization: `${BEARER} ${authToken}` },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const drop = async (url, authToken) => {
+  try {
+    const response = await axiosInstance.delete(`${url}`, {
+      headers: { Authorization: `${BEARER} ${authToken}` },
+    });
+    return response;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else {
+      throw new Error(error);
+    }
+  }
+};
