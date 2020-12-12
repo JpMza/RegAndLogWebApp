@@ -8,13 +8,13 @@ var io = require('socket.io')(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
+    allowedHeaders: ["regandlop-app-header"],
     credentials: true
   }
 });
 
 app.get('/', (req, res) => {
-    res.send('<h1>Hello world</h1>');
+    res.send('<h1>Web socket on</h1>');
   });
 
 
@@ -29,12 +29,14 @@ io.on('connection', function (socket) {
 	setInterval(function(){
 		var data = getRandomInt(0,100);
 		io.sockets.emit('pushdata', data);
-	},2000);
+	},10000);
     
     socket.on('disconnect', () => {
         console.log('disconnected');
       });
 });
+
+
 
 server.listen(8570, () => {
     console.log('Server is listening on port 8570...');

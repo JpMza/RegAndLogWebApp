@@ -1,8 +1,20 @@
 import React from "react";
 import Chart from "./Chart";
 import openSocket from 'socket.io-client';
+import {barBGColors,barBorderColors} from './BarColors';
 
-const socket = openSocket('http://localhost:8570');
+const options = {
+  scales: {
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true,
+        },
+      },
+    ],
+  },
+  responsive: true
+}
 class ChartComponent extends React.Component {
 
   constructor(props) {
@@ -11,43 +23,20 @@ class ChartComponent extends React.Component {
   }
 
   state = {
-    loading: true,
-    lineChartData: {
+    daysQuantity: 0,
+    barData: {
       labels: [],
       datasets: [
         {
-          type: "bar",
-          label: "Usuarios Registrados",
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ],
+          // type: "bar",
+          label: `Usuarios Registrados ${new Date().getMonth().toLocaleString()}`,
+          backgroundColor: barBGColors, 
+          borderColor: barBorderColors ,
           borderWidth: "2",
-          lineTension: 1,
-          data: [10, 20, 30, 40, 50, 60, 70, 80, 100]
+          //lineTension: 1,
+          data: [42, 12, 32, 78, 45, 66, 79, 95, 6]
         }
       ]
-    },
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
     }
 
   };
@@ -62,69 +51,61 @@ class ChartComponent extends React.Component {
     for (let index = 1; index <= days; index++) {
       daysNumbers.push(index.toString());
     }
-    //this.setState({labels : daysNumbers})
-    console.log(daysNumbers);
     return daysNumbers;
   }
 
   componentDidMount() {
-    this.setState({ labels: this.getDaysArray(), loading: false })
+    let daysArray = this.getDaysArray();
+    let daysQuantity = daysArray.length;
 
-    // const subscribe = {
-    //   type: "subscribe",
-    //   channels: [
-    //     {
-    //       name: "ticker",
-    //       product_ids: ["BTC-USD"]
-    //     }
-    //   ]
-    // };
+    this.setState(prevState => ({
+      barData: {
+        ...prevState.barData,
+        labels: daysArray
+      },
+      daysQuantity
+    }));
 
-    //this.ws = new WebSocket("http://localhost:8570");
-//    this.ws = openSocket('http://localhost:8570');
 
-    socket.onopen = () => {
-      //this.ws.send(JSON.stringify(subscribe));
-      this.ws.send("Here's some text that the server is urgently awaiting!");
+    this.socket = openSocket('http://localhost:8570');
 
-    };
 
-    // this.ws.onmessage = e => {
-    //   const value = JSON.parse(e.data);
-    //   if (value.type !== "ticker") {
-    //     return;
-    //   }
 
-    //   const oldBtcDataSet = this.state.lineChartData.datasets[0];
-    //   const newBtcDataSet = { ...oldBtcDataSet };
-    //   newBtcDataSet.data.push(value.price);
+    this.socket.on(`pushdata`, data => {
 
-    //   const newChartData = {
-    //     ...this.state.lineChartData,
-    //     datasets: [newBtcDataSet],
-    //     labels: this.state.lineChartData.labels.concat(
-    //       new Date().toLocaleTimeString()
-    //     )
-    //   };
-    //   this.setState({ lineChartData: newChartData });
-    //};
+      if (this.state.barData.datasets[0].data.length === daysQuantity) {
+        this.socket.close();
+        return;
+      }
+
+      const oldDataSet = this.state.barData.datasets[0];
+      const newDataSet = { ...oldDataSet };
+      newDataSet.data.push(data);
+
+      const newChartData = {
+        ...this.state.barData,
+        datasets: [newDataSet],
+        labels: this.state.barData.labels
+      };
+      this.setState({ barData: newChartData });
+    })
+
   }
 
   componentWillUnmount() {
-    this.ws.close();
+    this.socket.close();
   }
 
   render() {
-    //const { classes } = this.props;
-
     return (
-      <div className="align-content-center">
+      <div className="ml-5 align-content-center">
         <div className="card" style={{ width: 50 + 'rem' }} >
           <div className="card-body">
-
+            <button onClick={() => { console.log(this.state) }}>estado</button>
             <Chart
-              data={this.state.lineChartData}
-              options={this.state.lineChartOptions}
+              //dadatasetKeyProvider={}
+              data={this.state.barData}
+              options={options}
             />
           </div>
         </div>
