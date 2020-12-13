@@ -1,63 +1,31 @@
 import React from "react";
 import Chart from "./Chart";
 import openSocket from 'socket.io-client';
-import {barBGColors,barBorderColors} from './BarColors';
-
-const options = {
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-  },
-  responsive: true
-}
+import * as cns from './Constants';
+import {getDaysArray , getMonth} from '../Utils/Functions';
 class ChartComponent extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.getDaysArray = this.getDaysArray.bind(this);
-  }
-
-  state = {
+   state = {
+    loading: true,
     daysQuantity: 0,
     barData: {
       labels: [],
       datasets: [
         {
-          // type: "bar",
-          label: `Usuarios Registrados ${new Date().getMonth().toLocaleString()}`,
-          backgroundColor: barBGColors, 
-          borderColor: barBorderColors ,
+          label: `${cns.REG_USERS} ${getMonth()}`,
+          backgroundColor: cns.barBGColors,
+          borderColor: cns.barBorderColors,
           borderWidth: "2",
-          //lineTension: 1,
-          data: [42, 12, 32, 78, 45, 66, 79, 95, 6]
+          data: []
         }
       ]
     }
 
   };
 
-  getDaysArray = () => {
-
-    let daysNumbers = [];
-    let date = new Date()
-    let year = date.getUTCFullYear();
-    let month = date.getUTCMonth() + 1;
-    let days = new Date(year, month, 0).getDate();
-    for (let index = 1; index <= days; index++) {
-      daysNumbers.push(index.toString());
-    }
-    return daysNumbers;
-  }
-
   componentDidMount() {
-    let daysArray = this.getDaysArray();
+    let daysArray = getDaysArray();
     let daysQuantity = daysArray.length;
-
     this.setState(prevState => ({
       barData: {
         ...prevState.barData,
@@ -69,12 +37,11 @@ class ChartComponent extends React.Component {
 
     this.socket = openSocket('http://localhost:8570');
 
-
-
     this.socket.on(`pushdata`, data => {
 
       if (this.state.barData.datasets[0].data.length === daysQuantity) {
         this.socket.close();
+        this.setState({ loading: false });
         return;
       }
 
@@ -87,6 +54,7 @@ class ChartComponent extends React.Component {
         datasets: [newDataSet],
         labels: this.state.barData.labels
       };
+
       this.setState({ barData: newChartData });
     })
 
@@ -97,21 +65,29 @@ class ChartComponent extends React.Component {
   }
 
   render() {
-    return (
-      <div className="ml-5 align-content-center">
-        <div className="card" style={{ width: 50 + 'rem' }} >
-          <div className="card-body">
-            <button onClick={() => { console.log(this.state) }}>estado</button>
-            <Chart
-              //dadatasetKeyProvider={}
-              data={this.state.barData}
-              options={options}
-            />
+
+    if (this.state.loading) {
+      return (
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Cargando...</span>
           </div>
         </div>
-      </div>
-    );
-
+      )
+    } else {
+      return (
+        <div className="d-flex justify-content-center">
+          <div className="card" style={{ width: 50 + 'rem' }} >
+            <div className="card-body">
+              <Chart
+                data={this.state.barData}
+                options={cns.options}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

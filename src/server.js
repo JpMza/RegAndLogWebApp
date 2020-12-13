@@ -1,6 +1,3 @@
-// var application_root = __dirname,
-// 	path 	= require("path");
-
 var app = require('express')();
 	
 var	server = require('http').createServer(app);
@@ -18,7 +15,6 @@ app.get('/', (req, res) => {
   });
 
 
-
 ///DATA
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -29,11 +25,11 @@ io.on('connection', function (socket) {
 	setInterval(function(){
 		var data = getRandomInt(0,100);
 		io.sockets.emit('pushdata', data);
-	},10000);
+	},100);
     
-    socket.on('disconnect', () => {
-        console.log('disconnected');
-      });
+  socket.on('disconnect', () => {
+    console.log('disconnected');
+  });
 });
 
 

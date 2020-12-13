@@ -3,13 +3,7 @@ import './Login.css';
 import { login } from '../ApiRequest/ApiRequest';
 import { parseJwt } from '../Utils/Functions';
 
-
-
 class Login extends React.Component {
-
-    // constructor(props) {
-    //     super(props);
-    // }
 
     state = {
         username: "",
@@ -18,7 +12,6 @@ class Login extends React.Component {
     }
 
     handleChange = (e) => {
-        console.log(this.props);
         this.setState({ [e.target.id]: e.target.value })
     }
 
@@ -28,7 +21,7 @@ class Login extends React.Component {
             const response = await login(this.state.username, this.state.password, this.state.rememberme);
             console.log(response);
             await this.saveToken(response);
-            this.props.history.push(`/register`);
+            this.props.history.push(`/users`);
         } catch (error) {
             console.log(error)
         }
@@ -40,34 +33,29 @@ class Login extends React.Component {
         cookies.set("token", id_token, {
             maxAge: parsedToken.exp,
         });
-        //cookies.set("role", parsedToken.auth);
     };
 
     render() {
         return (
 
             <div>
-                <body class="text-center">
-                    {/* <div>
-                        <button>Registrarse</button>
-
-                   </div> */}
-                    <main class="form-signin">
+                <div className="text-center">
+                    <main className="form-signin">
                         <form>
-                            <h1 class="h3 mb-3 fw-normal">Login</h1>
-                            <label for="inputEmail" class="visually-hidden">Nombre de Usuario</label>
-                            <input type="text" id="username" onChange={this.handleChange} value={this.state.username} class="form-control" placeholder="Nombre de Usuario" required autofocus />
-                            <label for="inputPassword" class="visually-hidden">Contraseña</label>
-                            <input type="password" onChange={this.handleChange} id="password" value={this.state.password} class="form-control" placeholder="Contraseña" required />
-                            <div class="checkbox mb-3">
+                            <h1 className="h3 mb-3 fw-normal">Login</h1>
+                            <label htmlFor="inputEmail" className="visually-hidden">Nombre de Usuario</label>
+                            <input type="text" id="username" onChange={this.handleChange} value={this.state.username} className="form-control" placeholder="Nombre de Usuario" required autoFocus />
+                            <label htmlFor="inputPassword" className="visually-hidden">Contraseña</label>
+                            <input type="password" onChange={this.handleChange} id="password" value={this.state.password} className="form-control" placeholder="Contraseña" required />
+                            <div className="checkbox mb-3">
                                 <label>
                                     <input type="checkbox" value={this.state.rememberme} onClick={() => this.setState({ rememberme: !this.state.rememberme })} /> Recordarme
                                         </label>
                             </div>
-                            <button onClick={e => this.handleSubmit(e)} class="w-100 btn btn-lg btn-primary" type="submit">Iniciar Sesión</button>
+                            <button onClick={e => this.handleSubmit(e)} className="w-100 btn btn-lg btn-primary" type="submit">Iniciar Sesión</button>
                         </form>
                     </main>
-                </body>
+                </div>
             </div>
 
         );
