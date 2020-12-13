@@ -3,12 +3,13 @@ import React from 'react';
 import { HashRouter, Route, Switch, Redirect, Link } from "react-router-dom";
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
-import { createBrowserHistory } from "history";
 
-const history = createBrowserHistory();
+//const history = createBrowserHistory();
 const Login = React.lazy(() => import("./Login/Login"));
 const Register = React.lazy(() => import("./Register/Register"));
 const User = React.lazy(() => import("./User/User"));
+const Chart = React.lazy(() => import("./Chart/ChartComponent"));
+
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Cargando...</div>
 );
@@ -53,10 +54,13 @@ class App extends React.Component {
                 <Register cookies={this.cookies} {...props}></Register>
               )}>
               </Route>
-              <Route exact path="/" name="Home" render={(props) => (
+              <Route exact path="/users" name="Users" render={(props) => (
                 <User cookies={this.cookies} {...props}></User>
               )}>
               </Route>
+              <Route exact path="/" name="Home" render={(props) => (
+                <Chart cookies={this.cookies} {...props}></Chart>
+              )}></Route>
               <Redirect
                 path="/"
                 to={this.props.cookies.cookies.token ? "/" : "/login"}

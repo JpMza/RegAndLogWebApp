@@ -7,12 +7,12 @@ export default class Register extends React.Component {
         this.token = props.cookies.cookies.token;
     }
 
-    user = (this.props.history && this.props.history.location &&  this.props.history.location.user ) ? this.props.history.location.user : undefined;
+    user = (this.props.history && this.props.history.location && this.props.history.location.user) ? this.props.history.location.user : undefined;
 
     state = {
         login: this.user ? this.user.login : "",
         firstName: this.user ? this.user.email : "",
-        lastName: this.user ? this.user.lastName :  "",
+        lastName: this.user ? this.user.lastName : "",
         email: this.user ? this.user.email : "",
         activated: true,
         authorities: ["ROLE_ADMIN"],
@@ -27,15 +27,18 @@ export default class Register extends React.Component {
     }
 
     handleChange = (e) => {
-        this.setState({ [e.target.id]: e.target.value })
+        if (e.target.id === 'login') {
+            this.setState({ [e.target.id]: e.target.value.trim() })
+        } else {
+            this.setState({ [e.target.id]: e.target.value })
+        }
     }
 
     handleSubmit = async () => {
         if (this.user) {
             put("users", this.state, this.token)
                 .then((response) => {
-                    console.log(response);
-                    this.props.history.push("/");
+                    this.props.history.push("/users");
                 })
                 .catch((error) => console.log(error));
         } else {
@@ -47,7 +50,7 @@ export default class Register extends React.Component {
         }
     }
 
-    
+
     render() {
         return (
             <div className="row">
@@ -58,7 +61,7 @@ export default class Register extends React.Component {
                         <span className="input-group-text" id="basic-addon1">@</span>
                         <input type="text" id="email" className="form-control" onChange={this.handleChange} value={this.state.email} placeholder="Email" aria-label="email" aria-describedby="basic-addon1"></input>
                     </div>
-                    
+
                     <div className="input-group">
                         <span className="input-group-text">Nombre y Apellido</span>
                         <input id="firstName" onChange={this.handleChange} value={this.state.firstName} type="text" aria-label="Nombre" className="form-control"></input>
@@ -67,7 +70,6 @@ export default class Register extends React.Component {
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
                         <button onClick={this.handleSubmit} className="btn btn-success me-md-2 mr-3" type="button">Confirmar</button>
                         <button onClick={() => this.props.history.goBack()} className="btn btn-primary" type="button">Volver</button>
-                        {/* <button onClick={() => console.log(this.state)} class="btn btn-primary" type="button">estado</button> */}
                     </div>
                 </div>
             </div>
